@@ -122,15 +122,9 @@ Function Get-MFilesObjectPropertiesOutput {
         [object]$Properties
     )
 
-    #$Return = @()
     $Return = New-Object –TypeName PSObject
     Foreach ($Property in $Properties) {
-        #$Temp = New-Object –TypeName PSObject
-        #$Temp | Add-Member -Name 'PropertyDef' -MemberType Noteproperty -Value $Property.PropertyDef
-        #$Temp | Add-Member -Name 'PropertyName' -MemberType Noteproperty -Value $(Get-MFilesPropertyDefByID -Vault $Vault -Id $Property.PropertyDef).Name
-        #$Temp | Add-Member -Name 'DisplayValue' -MemberType Noteproperty -Value $Property.Value.DisplayValue
         $Return | Add-Member -Name $(Get-MFilesPropertyDefByID -Vault $Vault -Id $Property.PropertyDef).Name -MemberType Noteproperty -Value $Property.Value.DisplayValue
-        #$Return += $Temp
     }
     $Return
 }
@@ -181,7 +175,6 @@ Function Get-MFilesSearchCondition {
     $Condition
 }
 
-
 Function Get-MFilesSearch {
     [CmdletBinding()]
     Param(
@@ -192,18 +185,6 @@ Function Get-MFilesSearch {
     )
     
     $Vault.ObjectSearchOperations.SearchForObjectsByConditions($Conditions, $([MFilesAPI.MFSearchFlags]::MFSearchFlagNone), $false)
-}
-
-Function Get-MFilesSearchMore {
-    [CmdletBinding()]
-    Param(
-        [parameter(Mandatory=$True)]
-        [object[]]$Vault,
-        [parameter(Mandatory=$True)]
-        [object]$Conditions
-    )
-    
-    $Vault.ObjectSearchOperations.SearchForObjectsByConditions($Conditions, $([MFilesAPI.MFSearchFlags]::MFSearchFlagNone), $false).MoreResults
 }
 
 Function Get-MFilesSearchCount {
