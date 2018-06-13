@@ -1,7 +1,7 @@
 # M-Files-Powershell
 
 ## Connecting to Document Vault 
-```
+```powershell
 # Using M-Files Client
 $MFClient = New-Object -COM MFilesAPI.MFilesClientApplication
 
@@ -19,12 +19,12 @@ $Vault = Set-MFilesVaultConnection -VaultConnection $VaultConnection
 ```
 
 ## Get Object Properties by ID and object type
-```
+```powershell
 Get-MFilesObjectProperties -Vault $Vault -Id 1 -Type 0
 ```
 
 ## Use M-Files Search with conditions
-```
+```powershell
 # Multiple search conditions
 $Conditions = New-Object -Com MFilesAPI.SearchConditions
 # Document name or title Contains XXX
