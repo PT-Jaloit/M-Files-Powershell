@@ -1,4 +1,4 @@
-﻿[System.Reflection.Assembly]::LoadFrom("Interop.MFilesAPI.dll")
+﻿[System.Reflection.Assembly]::LoadFrom("C:\Windows\assembly\GAC_MSIL\Interop.MFilesAPI\7.0.0.0__f1b4733f444f7ad0\Interop.MFilesAPI.dll")
 
 Function Get-MFilesVault {
     [CmdletBinding()]
@@ -167,9 +167,11 @@ Function Get-MFilesSearchCondition {
     $Condition.ConditionType = $ConditionType
     $Condition.TypedValue.SetValue($DataType, $Value)
 
+    [System.Runtime.InteropServices.UnknownWrapper]$Nothing = New-Object "System.Runtime.InteropServices.UnknownWrapper" -ArgumentList @($null);
+
     switch ( $Expression )
     {
-        "Status"   { $Condition.Expression.SetStatusValueExpression($Status) }
+        "Status"   { $Condition.Expression.SetStatusValueExpression($Status, $Nothing) }
         "Property" { $Condition.Expression.DataPropertyValuePropertyDef = $Property }
     }
     $Condition
@@ -181,10 +183,20 @@ Function Get-MFilesSearch {
         [parameter(Mandatory=$True)]
         [object[]]$Vault,
         [parameter(Mandatory=$True)]
-        [object]$Conditions
+        [object]$Conditions,
+        [parameter(Mandatory=$False)]
+        [boolean]$MoreResults,
+        [parameter(Mandatory=$False)]
+        [int]$MaxResults = 0,
+        [parameter(Mandatory=$False)]
+        [int]$Timeout = 0
     )
     
-    $Vault.ObjectSearchOperations.SearchForObjectsByConditions($Conditions, $([MFilesAPI.MFSearchFlags]::MFSearchFlagNone), $false)
+    If($MoreResults){
+        $Vault.ObjectSearchOperations.SearchForObjectsByConditionsEx($Conditions, $([MFilesAPI.MFSearchFlags]::MFSearchFlagNone), $false, $MaxResults, $Timeout)
+    } Else {
+        $Vault.ObjectSearchOperations.SearchForObjectsByConditions($Conditions, $([MFilesAPI.MFSearchFlags]::MFSearchFlagNone), $false)
+    }
 }
 
 Function Get-MFilesSearchCount {

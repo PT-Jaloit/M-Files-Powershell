@@ -28,12 +28,17 @@ Get-MFilesObjectProperties -Vault $Vault -Id 1 -Type 0
 # Multiple search conditions
 $Conditions = New-Object -Com MFilesAPI.SearchConditions
 # Document name or title Contains XXX
-$Conditions.Add(1, $(Get-MFilesSearchCondition -Expression "Property" -ConditionType $([MFilesAPI.MFConditionType]::MFConditionTypeContains)  -Value "Test" -DataType $([MFilesAPI.MFDataType]::MFDatatypeText) -Property "0"))
+$Conditions.Add(-1, $(Get-MFilesSearchCondition -Expression "Property" -ConditionType $([MFilesAPI.MFConditionType]::MFConditionTypeContains)  -Value "Test" -DataType $([MFilesAPI.MFDataType]::MFDatatypeText) -Property "0"))
 # Class equals Document
-$Conditions.Add(2, $(Get-MFilesSearchCondition -Expression "Property" -ConditionType $([MFilesAPI.MFConditionType]::MFConditionTypeEqual)  -Value "0" -DataType $([MFilesAPI.MFDataType]::MFDatatypeLookup) -Property "100"))
+$Conditions.Add(-1, $(Get-MFilesSearchCondition -Expression "Property" -ConditionType $([MFilesAPI.MFConditionType]::MFConditionTypeEqual)  -Value "0" -DataType $([MFilesAPI.MFDataType]::MFDatatypeLookup) -Property "100"))
+# Object type is Document
+$Conditions.Add(-1, $(Get-MFilesSearchCondition -Expression "Status" -ConditionType $([MFilesAPI.MFConditionType]::MFConditionTypeEqual)  -Value "0" -DataType $([MFilesAPI.MFDataType]::MFDatatypeLookup) -Status $([MFilesAPI.MFStatusType]::MFStatusTypeObjectTypeID)))
 
 # Get search results
 $Results = Get-MFilesSearch -Vault $Vault -Conditions $Conditions
+
+# Get search results (no limit)
+$Results = Get-MFilesSearch -Vault $Vault -Conditions $Conditions -MoreResults $True
 
 # Return name or title and last modified date.
 Foreach ($Item in $Results){
